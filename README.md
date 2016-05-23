@@ -1,6 +1,8 @@
 Github Make Release
 ======================
 
+[![Build Status](https://travis-ci.org/warmans/github-make-release.svg?branch=master)](https://travis-ci.org/warmans/github-make-release)
+
 Makefile include to simplify github release automation.
 
 ### Variables
