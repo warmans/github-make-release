@@ -22,7 +22,7 @@ GH_REPO_OWNER = "warmans"
 GH_REPO_NAME = "test"
 GH_API_TOKEN = "mysecretkey"
 
-RELEASE_VERSION = 0.0.5
+RELEASE_VERSION = "0.0.5"
 
 RELEASE_ARTIFACT_DIR = "/path/to/some/artifacts"
 
