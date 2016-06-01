@@ -1,37 +1,36 @@
 # Github API token for your account. This token just needs repository permissions. (REQUIRED)
-GH_API_TOKEN ?= ""
+GH_API_TOKEN ?=
 
 # Github repo owner name. This will be your github username if you own the repo. (REQUIRED)
-GH_REPO_OWNER ?= ""
+GH_REPO_OWNER ?=
 
 # Github repo to create the release for. (REQUIRED)
-GH_REPO_NAME ?= ""
+GH_REPO_NAME ?=
 
 # Version number given to release. The release tag will match this value. The release name and description also
 # contain the version number. (REQUIRED)
-RELEASE_VERSION ?= "0.0.0"
+RELEASE_VERSION ?= 0.0.0
 
 # Release target. The tag is created from this commit-ish. Defaults to master. (OPTIONAL)
-RELEASE_TARGET_COMMITISH ?= "master"
+RELEASE_TARGET_COMMITISH ?= master
 
 # Release is a draft true/false. Defaults to false. (OPTIONAL)
-RELEASE_DRAFT ?= "false"
+RELEASE_DRAFT ?= false
 
 # Release is a pre-release true/false. Defaults to false. (OPTIONAL)
-RELEASE_PRE ?= "false"
+RELEASE_PRE ?= false
 
 # Release artifact dir. If set all applicable FILES in this dir will be uploaded as release
 # artifacts (see RELEASE_ARTIFACT_REGEX). If blank nothing is uploaded. (OPTIONAL)
-RELEASE_ARTIFACT_DIR ?= ""
+RELEASE_ARTIFACT_DIR ?=
 
 # Only files matching this regex in the RELEASE_ARTIFACT_DIR will be uploaded to the
 # release. Defaults to evertying. (OPTIONAL)
-RELEASE_ARTIFACT_REGEX ?= ".*"
+RELEASE_ARTIFACT_REGEX ?= .*
 
 # private constants
-_TPL_RELEASE ?= '{"tag_name":"%s", "target_commitish":"%s", "name":"Release %s", "body":"Release of version %s", "draft":%s, "prerelease":%s}'
-_PAYLOAD_RELEASE = `printf $(_TPL_RELEASE) $(RELEASE_VERSION) $(RELEASE_TARGET_COMMITISH) $(RELEASE_VERSION) $(RELEASE_VERSION) $(RELEASE_DRAFT) $(RELEASE_PRE)`
-_RELEASE_INFO = ".release-info.json"
+_RELEASE_INFO = .release-info.json
+_RELEASE_PAYLOAD := {"tag_name":"$(RELEASE_VERSION)", "target_commitish":"$(RELEASE_TARGET_COMMITISH)", "name":"Release $(RELEASE_VERSION)", "body":"Release of version $(RELEASE_VERSION)", "draft":$(RELEASE_DRAFT), "prerelease":$(RELEASE_PRE)}
 
 # Validate the required variables have been set.
 .PHONY: _validate
@@ -45,7 +44,7 @@ _validate:
 .PHONY: _release
 _release:
 	@echo "releasing version $(RELEASE_VERSION)..."
-	@curl --data "$(_PAYLOAD_RELEASE)" https://api.github.com/repos/$(GH_REPO_OWNER)/$(GH_REPO_NAME)/releases?access_token=$(GH_API_TOKEN) | tee $(_RELEASE_INFO)
+	curl --data '$(_RELEASE_PAYLOAD)' https://api.github.com/repos/$(GH_REPO_OWNER)/$(GH_REPO_NAME)/releases?access_token=$(GH_API_TOKEN) | tee $(_RELEASE_INFO)
 
 # Execute the artifact upload for the release (if required).
 .PHONY: _artifacts
